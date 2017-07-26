@@ -151,4 +151,4 @@ namespace Meridian.AppVeyorEvu.Console
             this.logger.Log(this.loggingProviderType, logEventInfo);
         }
     }
-    }
+}

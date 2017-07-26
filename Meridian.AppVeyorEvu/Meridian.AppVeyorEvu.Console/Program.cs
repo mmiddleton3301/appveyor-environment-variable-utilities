@@ -7,7 +7,6 @@
 
 namespace Meridian.AppVeyorEvu.Console
 {
-    using System;
     using CommandLine;
     using Meridian.AppVeyorEvu.Logic.Definitions;
     using NLog;
@@ -26,34 +25,6 @@ namespace Meridian.AppVeyorEvu.Console
         /// execution.
         /// </summary>
         private static bool executionSuccess;
-
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        /// <param name="args">
-        /// Any arguments passed to the executable upon calling.
-        /// </param>
-        /// <returns>
-        /// An exit code. 0 stands for success, anything else is failure.
-        /// </returns>
-        private static int Main(string[] args)
-        {
-            int toReturn = 0;
-
-            ParserResult<Options> parseResult =
-                Parser.Default.ParseArguments<Options>(args);
-
-            parseResult.WithParsed(CommandLineArgumentsParsed);
-
-            if (!executionSuccess)
-            {
-                // If exeuction wasn't a success, reflect this in the exit
-                // code.
-                toReturn = 1;
-            }
-
-            return toReturn;
-        }
 
         /// <summary>
         /// The method triggered when the command line arguments are parsed
@@ -90,6 +61,34 @@ namespace Meridian.AppVeyorEvu.Console
             IEvuSession evuSession = container.GetInstance<IEvuSession>();
 
             executionSuccess = evuSession.Run(options.ApiToken);
+        }
+
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        /// <param name="args">
+        /// Any arguments passed to the executable upon calling.
+        /// </param>
+        /// <returns>
+        /// An exit code. 0 stands for success, anything else is failure.
+        /// </returns>
+        private static int Main(string[] args)
+        {
+            int toReturn = 0;
+
+            ParserResult<Options> parseResult =
+                Parser.Default.ParseArguments<Options>(args);
+
+            parseResult.WithParsed(CommandLineArgumentsParsed);
+
+            if (!executionSuccess)
+            {
+                // If exeuction wasn't a success, reflect this in the exit
+                // code.
+                toReturn = 1;
+            }
+
+            return toReturn;
         }
     }
 }

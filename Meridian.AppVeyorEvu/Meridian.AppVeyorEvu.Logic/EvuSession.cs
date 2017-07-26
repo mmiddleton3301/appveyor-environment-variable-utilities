@@ -12,7 +12,6 @@ namespace Meridian.AppVeyorEvu.Logic
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
     using Meridian.AppVeyorEvu.Logic.Definitions;
-    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// Implements <see cref="IEvuSession" />.
@@ -22,7 +21,7 @@ namespace Meridian.AppVeyorEvu.Logic
         /// <summary>
         /// The base URI for the AppVeyor API.
         /// </summary>
-        private const string AppVeyorApiBaseUri =
+        private const string AppVeyorApiBaseUri = 
             "https://ci.appveyor.com/api/";
 
         /// <summary>
