@@ -16,10 +16,13 @@ namespace Meridian.AppVeyorEvu.Logic.Definitions
         /// <summary>
         /// The main entry point for the session. Name subject to change.
         /// </summary>
+        /// <param name="apiToken">
+        /// The AppVeyor API token to be used.
+        /// </param>
         /// <returns>
         /// Returns true if the process completed with success, otherwise
         /// false.
         /// </returns>
-        bool Run();
+        bool Run(string apiToken);
     }
 }

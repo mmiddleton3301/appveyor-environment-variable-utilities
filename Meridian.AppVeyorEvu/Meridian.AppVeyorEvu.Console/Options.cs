@@ -16,6 +16,17 @@ namespace Meridian.AppVeyorEvu.Console
     public class Options
     {
         /// <summary>
+        /// Gets or sets the AppVeyor API token to be used.
+        /// </summary>
+        [Option(
+            HelpText = "An AppVeyor API token.")]
+        public string ApiToken
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets a logging level to use. Optional - default value is
         /// <see cref="VerbosityOption.Warn" />. 
         /// </summary>

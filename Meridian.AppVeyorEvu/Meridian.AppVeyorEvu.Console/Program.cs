@@ -89,7 +89,7 @@ namespace Meridian.AppVeyorEvu.Console
             // Get an instance.
             IEvuSession evuSession = container.GetInstance<IEvuSession>();
 
-            executionSuccess = evuSession.Run();
+            executionSuccess = evuSession.Run(options.ApiToken);
         }
     }
 }
