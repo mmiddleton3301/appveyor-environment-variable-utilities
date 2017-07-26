@@ -29,5 +29,21 @@ namespace Meridian.AppVeyorEvu.Logic.Models
             get;
             set;
         }
+
+        /// <summary>
+        /// Overrides <see cref="object.ToString()" />.
+        /// </summary>
+        /// <returns>
+        /// A string that represents the current object.
+        /// </returns>
+        public override string ToString()
+        {
+            string toReturn =
+                $"Environment (" +
+                $"{nameof(this.DeploymentEnvironmentId)} = {this.DeploymentEnvironmentId}, " +
+                $"{nameof(this.Name)} = \"{this.Name}\")";
+
+            return toReturn;
+        }
     }
 }

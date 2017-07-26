@@ -55,14 +55,22 @@ namespace Meridian.AppVeyorEvu.Logic
         {
             bool toReturn = default(bool);
 
+            this.loggingProvider.Debug(
+                "Attempting to pull back all environments...");
+
             Models.Environment[] allEnvironments =
                 this.ExecuteAppVeyorApi<Models.Environment[]>(
                     apiToken,
                     new Uri("./environments", UriKind.Relative));
 
-            foreach (Models.Environment env in allEnvironments)
+            this.loggingProvider.Info(
+                $"{allEnvironments.Length} environment(s) returned.");
+
+            this.loggingProvider.Debug("Environments returned:");
+
+            foreach (Models.Environment environment in allEnvironments)
             {
-                this.loggingProvider.Warn(env.Name);
+                this.loggingProvider.Debug($"-> {environment}");
             }
 
             return toReturn;
@@ -103,16 +111,27 @@ namespace Meridian.AppVeyorEvu.Logic
                     new Uri(AppVeyorApiBaseUri),
                     methodEndpoint);
 
+                this.loggingProvider.Debug($"Invoking {apiPath}...");
+
                 // Get the list of roles
                 Task<HttpResponseMessage> getTask =
                     httpClient.GetAsync(apiPath);
 
                 using (HttpResponseMessage response = getTask.Result)
                 {
+                    this.loggingProvider.Debug(
+                        $"HTTP response code returned: " +
+                        $"{response.StatusCode}.");
+
                     response.EnsureSuccessStatusCode();
+
+                    this.loggingProvider.Debug(
+                        $"Reading results as {typeof(ResultType).Name}...");
 
                     Task<ResultType> readAsTask =
                         response.Content.ReadAsAsync<ResultType>();
+
+                    this.loggingProvider.Debug("Results parsed with success.");
 
                     toReturn = readAsTask.Result;
                 }
