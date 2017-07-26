@@ -16,10 +16,25 @@ namespace Meridian.AppVeyorEvu.Console
     public class Options
     {
         /// <summary>
+        /// Gets or sets an action that the instance of the application is to
+        /// perform.
+        /// </summary>
+        [Option(
+            HelpText = "The action to perform. Valid options are: " +
+                "\"CompareVariables\".",
+            Required = true)]
+        public ActionOption Action
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets the AppVeyor API token to be used.
         /// </summary>
         [Option(
-            HelpText = "An AppVeyor API token.")]
+            HelpText = "An AppVeyor API token.",
+            Required = true)]
         public string ApiToken
         {
             get;

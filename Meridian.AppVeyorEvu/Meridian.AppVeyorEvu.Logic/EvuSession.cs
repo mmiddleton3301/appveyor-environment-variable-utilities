@@ -50,7 +50,7 @@ namespace Meridian.AppVeyorEvu.Logic
         /// Returns true if the process completed with success, otherwise
         /// false.
         /// </returns>
-        public bool Run(string apiToken)
+        public bool CompareEnvironmentVariables(string apiToken)
         {
             bool toReturn = default(bool);
 

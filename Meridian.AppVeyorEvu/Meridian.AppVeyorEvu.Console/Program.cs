@@ -60,7 +60,13 @@ namespace Meridian.AppVeyorEvu.Console
             // Get an instance.
             IEvuSession evuSession = container.GetInstance<IEvuSession>();
 
-            executionSuccess = evuSession.Run(options.ApiToken);
+            switch (options.Action)
+            {
+                case ActionOption.CompareVariables:
+                    executionSuccess = evuSession.CompareEnvironmentVariables(
+                        options.ApiToken);
+                    break;
+            }
         }
 
         /// <summary>

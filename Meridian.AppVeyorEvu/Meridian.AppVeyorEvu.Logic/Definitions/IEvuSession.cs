@@ -14,7 +14,8 @@ namespace Meridian.AppVeyorEvu.Logic.Definitions
     public interface IEvuSession
     {
         /// <summary>
-        /// The main entry point for the session. Name subject to change.
+        /// Compares environment variables for a given list of AppVeyor
+        /// environments.
         /// </summary>
         /// <param name="apiToken">
         /// The AppVeyor API token to be used.
@@ -23,6 +24,6 @@ namespace Meridian.AppVeyorEvu.Logic.Definitions
         /// Returns true if the process completed with success, otherwise
         /// false.
         /// </returns>
-        bool Run(string apiToken);
+        bool CompareEnvironmentVariables(string apiToken);
     }
 }
