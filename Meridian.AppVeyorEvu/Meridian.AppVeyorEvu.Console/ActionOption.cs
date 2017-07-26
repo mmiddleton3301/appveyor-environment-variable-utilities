@@ -1,5 +1,5 @@
 ﻿// ----------------------------------------------------------------------------
-// <copyright file="Program.cs" company="MTCS (Matt Middleton)">
+// <copyright file="ActionOption.cs" company="MTCS (Matt Middleton)">
 // Copyright (c) Meridian Technology Consulting Services (Matt Middleton).
 // All rights reserved.
 // </copyright>
