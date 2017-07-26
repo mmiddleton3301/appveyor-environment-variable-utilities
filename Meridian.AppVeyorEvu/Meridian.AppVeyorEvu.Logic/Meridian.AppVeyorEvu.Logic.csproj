@@ -35,6 +35,7 @@
     <Compile Include="Definitions\ILoggingProvider.cs" />
     <Compile Include="Definitions\IEvuSession.cs" />
     <Compile Include="EvuSession.cs" />
+    <Compile Include="Models\Environment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

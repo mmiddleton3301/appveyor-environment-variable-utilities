@@ -7,6 +7,7 @@
 
 namespace Meridian.AppVeyorEvu.Logic
 {
+    using System;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
@@ -18,6 +19,12 @@ namespace Meridian.AppVeyorEvu.Logic
     /// </summary> 
     public class EvuSession : IEvuSession
     {
+        /// <summary>
+        /// The base URI for the AppVeyor API.
+        /// </summary>
+        private const string AppVeyorApiBaseUri =
+            "https://ci.appveyor.com/api/";
+
         /// <summary>
         /// An instance of <see cref="ILoggingProvider" />.
         /// </summary>
@@ -48,6 +55,42 @@ namespace Meridian.AppVeyorEvu.Logic
         {
             bool toReturn = default(bool);
 
+            Models.Environment[] allEnvironments =
+                this.ExecuteAppVeyorApi<Models.Environment[]>(
+                    apiToken,
+                    new Uri("./environments", UriKind.Relative));
+
+            foreach (Models.Environment env in allEnvironments)
+            {
+                this.loggingProvider.Warn(env.Name);
+            }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Executes a <paramref name="methodEndpoint" /> against the AppVeyor
+        /// API.
+        /// </summary>
+        /// <typeparam name="ResultType">
+        /// A model type representing the returned JSON.
+        /// </typeparam>
+        /// <param name="apiToken">
+        /// The AppVeyor API token to be used.
+        /// </param>
+        /// <param name="methodEndpoint">
+        /// The method endpoint to invoke.
+        /// </param>
+        /// <returns>
+        /// The result as a <typeparamref name="ResultType" /> instance.
+        /// </returns>
+        private ResultType ExecuteAppVeyorApi<ResultType>(
+            string apiToken,
+            Uri methodEndpoint)
+            where ResultType : class
+        {
+            ResultType toReturn = null;
+
             using (HttpClient httpClient = new HttpClient())
             {
                 // Setup headers.
@@ -56,23 +99,22 @@ namespace Meridian.AppVeyorEvu.Logic
                 httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", apiToken);
 
+                Uri apiPath = new Uri(
+                    new Uri(AppVeyorApiBaseUri),
+                    methodEndpoint);
+
                 // Get the list of roles
                 Task<HttpResponseMessage> getTask =
-                    httpClient.GetAsync("https://ci.appveyor.com/api/roles");
+                    httpClient.GetAsync(apiPath);
 
                 using (HttpResponseMessage response = getTask.Result)
                 {
                     response.EnsureSuccessStatusCode();
 
-                    Task<JToken[]> readAsTask =
-                        response.Content.ReadAsAsync<JToken[]>();
+                    Task<ResultType> readAsTask =
+                        response.Content.ReadAsAsync<ResultType>();
 
-                    JToken[] roles = readAsTask.Result;
-
-                    foreach (JToken role in roles)
-                    {
-                        this.loggingProvider.Warn(role.Value<string>("name"));
-                    }
+                    toReturn = readAsTask.Result;
                 }
             }
 
