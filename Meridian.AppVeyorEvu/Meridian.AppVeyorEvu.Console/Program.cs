@@ -66,7 +66,8 @@ namespace Meridian.AppVeyorEvu.Console
                 case ActionOption.CompareVariables:
                     executionSuccess = evuSession.CompareEnvironmentVariables(
                         options.ApiToken,
-                        options.Environments.ToArray());
+                        options.Environments.ToArray(),
+                        options.OutputCsvLocation);
                     break;
             }
         }

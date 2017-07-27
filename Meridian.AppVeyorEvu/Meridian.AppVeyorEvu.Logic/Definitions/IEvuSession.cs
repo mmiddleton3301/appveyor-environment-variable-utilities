@@ -7,6 +7,8 @@
 
 namespace Meridian.AppVeyorEvu.Logic.Definitions
 {
+    using System.IO;
+
     /// <summary>
     /// Describes the operations provided by the environment variable utilities
     /// session.
@@ -23,12 +25,17 @@ namespace Meridian.AppVeyorEvu.Logic.Definitions
         /// <param name="environments">
         /// A list of environment names, as they appear in AppVeyor.
         /// </param>
+        /// <param name="outputCsvLocation">
+        /// The destination location for the CSV file, as a
+        /// <see cref="FileInfo" /> instance.
+        /// </param>
         /// <returns>
         /// Returns true if the process completed with success, otherwise
         /// false.
         /// </returns>
         bool CompareEnvironmentVariables(
             string apiToken,
-            string[] environments);
+            string[] environments,
+            FileInfo outputCsvLocation);
     }
 }

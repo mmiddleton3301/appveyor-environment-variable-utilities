@@ -8,6 +8,7 @@
 namespace Meridian.AppVeyorEvu.Console
 {
     using System.Collections.Generic;
+    using System.IO;
     using CommandLine;
 
     /// <summary>
@@ -46,8 +47,22 @@ namespace Meridian.AppVeyorEvu.Console
         /// Gets or sets a list of environment names, as they appear in
         /// AppVeyor.
         /// </summary>
-        [Option(HelpText = "A list of AppVeyor environment names.")]
+        [Option(
+            HelpText = "A list of AppVeyor environment names.")]
         public IList<string> Environments
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the location of the output CSV when comparing
+        /// environment variables.
+        /// </summary>
+        [Option(
+            HelpText = "The location in which to output environment " +
+                "variables when comparing.")]
+        public FileInfo OutputCsvLocation
         {
             get;
             set;

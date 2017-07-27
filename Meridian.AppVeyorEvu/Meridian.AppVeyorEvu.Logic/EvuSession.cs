@@ -8,6 +8,7 @@
 namespace Meridian.AppVeyorEvu.Logic
 {
     using System;
+    using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -38,6 +39,11 @@ namespace Meridian.AppVeyorEvu.Logic
             "./environments/{0}/settings";
 
         /// <summary>
+        /// An instance of <see cref="ICsvProvider" />.
+        /// </summary>
+        private readonly ICsvProvider csvProvider;
+
+        /// <summary>
         /// An instance of <see cref="ILoggingProvider" />.
         /// </summary>
         private readonly ILoggingProvider loggingProvider;
@@ -45,11 +51,17 @@ namespace Meridian.AppVeyorEvu.Logic
         /// <summary>
         /// Initialises a new instance of the <see cref="EvuSession" /> class.
         /// </summary>
+        /// <param name="csvProvider">
+        /// An instance of <see cref="ICsvProvider" />.
+        /// </param>
         /// <param name="loggingProvider">
         /// An instance of <see cref="ILoggingProvider" />.
         /// </param>
-        public EvuSession(ILoggingProvider loggingProvider)
+        public EvuSession(
+            ICsvProvider csvProvider,
+            ILoggingProvider loggingProvider)
         {
+            this.csvProvider = csvProvider;
             this.loggingProvider = loggingProvider;
         }
 
@@ -62,16 +74,22 @@ namespace Meridian.AppVeyorEvu.Logic
         /// <param name="environments">
         /// A list of environment names, as they appear in AppVeyor.
         /// </param>
+        /// <param name="outputCsvLocation">
+        /// The destination location for the CSV file, as a
+        /// <see cref="FileInfo" /> instance.
+        /// </param>
         /// <returns>
         /// Returns true if the process completed with success, otherwise
         /// false.
         /// </returns>
         public bool CompareEnvironmentVariables(
             string apiToken,
-            string[] environments)
+            string[] environments,
+            FileInfo outputCsvLocation)
         {
             bool toReturn = default(bool);
 
+            // TODO: Validation/error handling on opitional options.
             this.loggingProvider.Debug(
                 "Attempting to pull back all environments...");
 
@@ -124,6 +142,20 @@ namespace Meridian.AppVeyorEvu.Logic
             Models.EnvironmentDetail[] envSettings = matchingEnvs
                 .Select(x => this.PullBackEnvironmentSettings(apiToken, x))
                 .ToArray();
+
+            this.csvProvider.WriteCsv(
+                outputCsvLocation,
+                new string[][]
+                {
+                    new string[]
+                    {
+                        "abc", "def"
+                    },
+                    new string[]
+                    {
+                        "ghi", "jkl"
+                    }
+                });
                 
             return toReturn;
         }

@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Definitions\ICsvProvider.cs" />
     <Compile Include="Definitions\ILoggingProvider.cs" />
     <Compile Include="Definitions\IEvuSession.cs" />
     <Compile Include="EvuSession.cs" />
