@@ -24,13 +24,13 @@ namespace Meridian.AppVeyorEvu.Logic
         /// <summary>
         /// The base URI for the AppVeyor API.
         /// </summary>
-        private const string AppVeyorApiBaseUri =
+        private const string AppVeyorApiBaseUri = 
             "https://ci.appveyor.com/api/";
 
         /// <summary>
         /// A relative URI to list all environments.
         /// </summary>
-        private const string AllEnvironmentsRelUri = 
+        private const string AllEnvironmentsRelUri =
             "./environments";
 
         /// <summary>
@@ -138,12 +138,46 @@ namespace Meridian.AppVeyorEvu.Logic
                     $"Execution will continue with found environments.");
             }
 
+            this.loggingProvider.Debug(
+                $"Pulling back environment variables for each environment " +
+                $"({matchingEnvs.Length} in total)...");
+
             // Pull back the environment variables for each of the matching
             // environments.
             Models.EnvironmentDetail[] envSettings = matchingEnvs
                 .Select(x => this.PullBackEnvironmentSettings(apiToken, x))
                 .ToArray();
 
+            this.loggingProvider.Info(
+                $"Environment variables for {envSettings.Length} " +
+                $"environment(s) pulled down.");
+
+            this.loggingProvider.Debug("Constructing the output CSV...");
+
+            this.ConstructCsv(outputCsvLocation, envSettings);
+
+            this.loggingProvider.Info(
+                $"Output CSV constructed. Location: " +
+                $"{outputCsvLocation.FullName}.");
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Constructs the CSV containing all the environment variables.
+        /// </summary>
+        /// <param name="outputCsvLocation">
+        /// The destination location for the CSV file, as a
+        /// <see cref="FileInfo" /> instance.
+        /// </param>
+        /// <param name="envSettings">
+        /// An array of <see cref="Models.EnvironmentDetail" /> instances,
+        /// containing environment variables.
+        /// </param>
+        private void ConstructCsv(
+            FileInfo outputCsvLocation,
+            Models.EnvironmentDetail[] envSettings)
+        {
             List<string[]> rowsList = new List<string[]>();
 
             // First, write all the column headers. This will be the
@@ -175,8 +209,6 @@ namespace Meridian.AppVeyorEvu.Logic
             this.csvProvider.WriteCsv(
                 outputCsvLocation,
                 rowsList.ToArray());
-
-            return toReturn;
         }
 
         /// <summary>
@@ -320,6 +352,9 @@ namespace Meridian.AppVeyorEvu.Logic
         {
             Models.EnvironmentDetail toReturn = null;
 
+            this.loggingProvider.Debug(
+                $"Pulling back environment variables for {environment}...");
+
             string uriStr = string.Format(
                 EnvironmentSettingsRelUri,
                 environment.DeploymentEnvironmentId);
@@ -330,6 +365,9 @@ namespace Meridian.AppVeyorEvu.Logic
                     new Uri(uriStr, UriKind.Relative));
 
             toReturn = singleEnvironment.Environment;
+
+            this.loggingProvider.Info(
+                $"Environment variables for {environment} returned.");
 
             return toReturn;
         }
