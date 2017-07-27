@@ -24,19 +24,19 @@ namespace Meridian.AppVeyorEvu.Logic
         /// <summary>
         /// The base URI for the AppVeyor API.
         /// </summary>
-        private const string AppVeyorApiBaseUri = 
+        private const string AppVeyorApiBaseUri =
             "https://ci.appveyor.com/api/";
 
         /// <summary>
         /// A relative URI to list all environments.
         /// </summary>
-        private const string AllEnvironmentsRelUri =
+        private const string AllEnvironmentsRelUri = 
             "./environments";
 
         /// <summary>
         /// A relative URI to list settings for an environment.
         /// </summary>
-        private const string EnvironmentSettingsUri =
+        private const string EnvironmentSettingsRelUri = 
             "./environments/{0}/settings";
 
         /// <summary>
@@ -167,37 +167,7 @@ namespace Meridian.AppVeyorEvu.Logic
             // required.
             // TODO: Needs a refactor.
             string[][] csvContent = environmentVarNames
-                .Select((x) =>
-                {
-                    List<string> rowBodyContent = new List<string>();
-
-                    // Row header here.
-                    rowBodyContent.Add(x);
-
-                    // Then each environment's value (if it exists, of course).
-                    string[] varRow = columnHeaders
-                        .Where(y => !string.IsNullOrWhiteSpace(y))
-                        .Select(y =>
-                        {
-                            string envVarValue = null;
-
-                            Models.EnvironmentDetail environmentDetail =
-                                envSettings.Single(z => z.Name == y);
-
-                            envVarValue = environmentDetail.Settings
-                                .EnvironmentVariables
-                                .Where(z => z.Name == x)
-                                .Select(z => z.Value.Value)
-                                .SingleOrDefault();
-
-                            return envVarValue;
-                        })
-                        .ToArray();
-
-                    rowBodyContent.AddRange(varRow);
-
-                    return rowBodyContent.ToArray();
-                })
+                .Select(x => this.CreateCsvBodyRow(x, columnHeaders, envSettings))
                 .ToArray();
 
             rowsList.AddRange(csvContent);
@@ -205,7 +175,64 @@ namespace Meridian.AppVeyorEvu.Logic
             this.csvProvider.WriteCsv(
                 outputCsvLocation,
                 rowsList.ToArray());
-                
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Creates a row in the CSV being created.
+        /// </summary>
+        /// <param name="environmentVariableName">
+        /// The environment variable currently being considered.
+        /// </param>
+        /// <param name="columnHeaders">
+        /// An array of <see cref="string" /> values, containing the column
+        /// headers (i.e. environment names).
+        /// </param>
+        /// <param name="environmentDetails">
+        /// An array of <see cref="Models.EnvironmentDetail" /> instances,
+        /// containing environment detail.
+        /// </param>
+        /// <returns>
+        /// The current CSV row detail, as an array of <see cref="string" />
+        /// values.
+        /// </returns>
+        private string[] CreateCsvBodyRow(
+            string environmentVariableName,
+            string[] columnHeaders,
+            Models.EnvironmentDetail[] environmentDetails)
+        {
+            string[] toReturn = null;
+
+            List<string> rowBodyContent = new List<string>();
+
+            // Row header here.
+            rowBodyContent.Add(environmentVariableName);
+
+            // Then each environment's value (if it exists, of course).
+            string[] varRow = columnHeaders
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x =>
+                {
+                    string envVarValue = null;
+
+                    Models.EnvironmentDetail environmentDetail =
+                        environmentDetails.Single(y => y.Name == x);
+
+                    envVarValue = environmentDetail.Settings
+                        .EnvironmentVariables
+                        .Where(y => y.Name == environmentVariableName)
+                        .Select(y => y.Value.Value)
+                        .SingleOrDefault();
+
+                    return envVarValue;
+                })
+                .ToArray();
+
+            rowBodyContent.AddRange(varRow);
+
+            toReturn = rowBodyContent.ToArray();
+
             return toReturn;
         }
 
@@ -294,7 +321,7 @@ namespace Meridian.AppVeyorEvu.Logic
             Models.EnvironmentDetail toReturn = null;
 
             string uriStr = string.Format(
-                EnvironmentSettingsUri,
+                EnvironmentSettingsRelUri,
                 environment.DeploymentEnvironmentId);
 
             Models.SingleEnvironmentWrapper singleEnvironment =
