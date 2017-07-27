@@ -8,6 +8,7 @@
 namespace Meridian.AppVeyorEvu.Logic
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
@@ -143,19 +144,67 @@ namespace Meridian.AppVeyorEvu.Logic
                 .Select(x => this.PullBackEnvironmentSettings(apiToken, x))
                 .ToArray();
 
+            List<string[]> rowsList = new List<string[]>();
+
+            // First, write all the column headers. This will be the
+            // environment names. Remember to include an empty first header.
+            string[] columnHeaders = new string[] { " " }
+                .Concat(envSettings.Select(x => x.Name))
+                .ToArray();
+            rowsList.Add(columnHeaders);
+
+            // Next, get a list of all the environment variables used.
+            // These will be the row headers.
+            string[] environmentVarNames = envSettings
+                .SelectMany(x => x.Settings
+                    .EnvironmentVariables
+                    .Select(y => y.Name))
+                .Distinct()
+                .OrderBy(x => x) // May as well have them in alphabetical order.
+                .ToArray();
+
+            // Now, write each setting out, and an environment value, if
+            // required.
+            // TODO: Needs a refactor.
+            string[][] csvContent = environmentVarNames
+                .Select((x) =>
+                {
+                    List<string> rowBodyContent = new List<string>();
+
+                    // Row header here.
+                    rowBodyContent.Add(x);
+
+                    // Then each environment's value (if it exists, of course).
+                    string[] varRow = columnHeaders
+                        .Where(y => !string.IsNullOrWhiteSpace(y))
+                        .Select(y =>
+                        {
+                            string envVarValue = null;
+
+                            Models.EnvironmentDetail environmentDetail =
+                                envSettings.Single(z => z.Name == y);
+
+                            envVarValue = environmentDetail.Settings
+                                .EnvironmentVariables
+                                .Where(z => z.Name == x)
+                                .Select(z => z.Value.Value)
+                                .SingleOrDefault();
+
+                            return envVarValue;
+                        })
+                        .ToArray();
+
+                    rowBodyContent.AddRange(varRow);
+
+                    return rowBodyContent.ToArray();
+                })
+                .ToArray();
+
+            rowsList.AddRange(csvContent);
+
             this.csvProvider.WriteCsv(
                 outputCsvLocation,
-                new string[][]
-                {
-                    new string[]
-                    {
-                        "abc", "def"
-                    },
-                    new string[]
-                    {
-                        "ghi", "jkl"
-                    }
-                });
+                rowsList.ToArray());
                 
             return toReturn;
         }
