@@ -36,6 +36,11 @@
     <Compile Include="Definitions\IEvuSession.cs" />
     <Compile Include="EvuSession.cs" />
     <Compile Include="Models\Environment.cs" />
+    <Compile Include="Models\EnvironmentDetail.cs" />
+    <Compile Include="Models\EnvironmentVariable.cs" />
+    <Compile Include="Models\Settings.cs" />
+    <Compile Include="Models\SingleEnvironmentWrapper.cs" />
+    <Compile Include="Models\AppVeyorValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

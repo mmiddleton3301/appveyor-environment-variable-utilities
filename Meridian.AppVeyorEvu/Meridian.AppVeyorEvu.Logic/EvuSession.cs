@@ -26,6 +26,18 @@ namespace Meridian.AppVeyorEvu.Logic
             "https://ci.appveyor.com/api/";
 
         /// <summary>
+        /// A relative URI to list all environments.
+        /// </summary>
+        private const string AllEnvironmentsRelUri =
+            "./environments";
+
+        /// <summary>
+        /// A relative URI to list settings for an environment.
+        /// </summary>
+        private const string EnvironmentSettingsUri =
+            "./environments/{0}/settings";
+
+        /// <summary>
         /// An instance of <see cref="ILoggingProvider" />.
         /// </summary>
         private readonly ILoggingProvider loggingProvider;
@@ -66,7 +78,7 @@ namespace Meridian.AppVeyorEvu.Logic
             Models.Environment[] allEnvironments =
                 this.ExecuteAppVeyorApi<Models.Environment[]>(
                     apiToken,
-                    new Uri("./environments", UriKind.Relative));
+                    new Uri(AllEnvironmentsRelUri, UriKind.Relative));
 
             this.loggingProvider.Info(
                 $"{allEnvironments.Length} environment(s) returned.");
@@ -106,6 +118,12 @@ namespace Meridian.AppVeyorEvu.Logic
                     $"passed in! Environments not found: {notMatchedDesc}. " +
                     $"Execution will continue with found environments.");
             }
+
+            // Pull back the environment variables for each of the matching
+            // environments.
+            Models.EnvironmentDetail[] envSettings = matchingEnvs
+                .Select(x => this.PullBackEnvironmentSettings(apiToken, x))
+                .ToArray();
                 
             return toReturn;
         }
@@ -170,6 +188,40 @@ namespace Meridian.AppVeyorEvu.Logic
                     toReturn = readAsTask.Result;
                 }
             }
+
+            return toReturn;
+        }
+
+        /// <summary>
+        /// Pulls back the environment settings for an individual
+        /// <see cref="Models.Environment" /> from the AppVeyor API.
+        /// </summary>
+        /// <param name="apiToken">
+        /// The AppVeyor API token to be used.
+        /// </param>
+        /// <param name="environment">
+        /// An <see cref="Models.Environment" /> instance.
+        /// </param>
+        /// <returns>
+        /// A more fully populated <see cref="Models.EnvironmentDetail" />
+        /// instance.
+        /// </returns>
+        private Models.EnvironmentDetail PullBackEnvironmentSettings(
+            string apiToken,
+            Models.Environment environment)
+        {
+            Models.EnvironmentDetail toReturn = null;
+
+            string uriStr = string.Format(
+                EnvironmentSettingsUri,
+                environment.DeploymentEnvironmentId);
+
+            Models.SingleEnvironmentWrapper singleEnvironment =
+                this.ExecuteAppVeyorApi<Models.SingleEnvironmentWrapper>(
+                    apiToken,
+                    new Uri(uriStr, UriKind.Relative));
+
+            toReturn = singleEnvironment.Environment;
 
             return toReturn;
         }
