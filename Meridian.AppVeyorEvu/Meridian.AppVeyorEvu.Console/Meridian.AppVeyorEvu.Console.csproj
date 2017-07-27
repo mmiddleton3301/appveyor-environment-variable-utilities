@@ -34,7 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ActionOption.cs" />
     <Compile Include="CsvProvider.cs" />
     <Compile Include="LoggingProvider.cs" />
     <Compile Include="Options.cs" />
