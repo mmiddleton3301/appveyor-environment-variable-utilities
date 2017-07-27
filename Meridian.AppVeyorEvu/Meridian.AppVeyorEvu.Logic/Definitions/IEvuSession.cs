@@ -20,10 +20,15 @@ namespace Meridian.AppVeyorEvu.Logic.Definitions
         /// <param name="apiToken">
         /// The AppVeyor API token to be used.
         /// </param>
+        /// <param name="environments">
+        /// A list of environment names, as they appear in AppVeyor.
+        /// </param>
         /// <returns>
         /// Returns true if the process completed with success, otherwise
         /// false.
         /// </returns>
-        bool CompareEnvironmentVariables(string apiToken);
+        bool CompareEnvironmentVariables(
+            string apiToken,
+            string[] environments);
     }
 }

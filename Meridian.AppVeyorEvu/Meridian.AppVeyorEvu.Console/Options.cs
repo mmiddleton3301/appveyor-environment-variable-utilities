@@ -7,6 +7,7 @@
 
 namespace Meridian.AppVeyorEvu.Console
 {
+    using System.Collections.Generic;
     using CommandLine;
 
     /// <summary>
@@ -36,6 +37,17 @@ namespace Meridian.AppVeyorEvu.Console
             HelpText = "An AppVeyor API token.",
             Required = true)]
         public string ApiToken
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets a list of environment names, as they appear in
+        /// AppVeyor.
+        /// </summary>
+        [Option(HelpText = "A list of AppVeyor environment names.")]
+        public IList<string> Environments
         {
             get;
             set;

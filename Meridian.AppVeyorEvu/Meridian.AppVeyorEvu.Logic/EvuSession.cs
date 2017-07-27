@@ -8,6 +8,7 @@
 namespace Meridian.AppVeyorEvu.Logic
 {
     using System;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Threading.Tasks;
@@ -46,11 +47,16 @@ namespace Meridian.AppVeyorEvu.Logic
         /// <param name="apiToken">
         /// The AppVeyor API token to be used.
         /// </param>
+        /// <param name="environments">
+        /// A list of environment names, as they appear in AppVeyor.
+        /// </param>
         /// <returns>
         /// Returns true if the process completed with success, otherwise
         /// false.
         /// </returns>
-        public bool CompareEnvironmentVariables(string apiToken)
+        public bool CompareEnvironmentVariables(
+            string apiToken,
+            string[] environments)
         {
             bool toReturn = default(bool);
 
@@ -72,6 +78,35 @@ namespace Meridian.AppVeyorEvu.Logic
                 this.loggingProvider.Debug($"-> {environment}");
             }
 
+            string environmentsPassedIn = string.Join(
+                ", ",
+                environments.Select(x => $"\"{x}\""));
+
+            this.loggingProvider.Debug(
+                $"Selecting environment names passed in " +
+                $"({environmentsPassedIn}) from the ones pulled back from " +
+                $"the API...");
+
+            Models.Environment[] matchingEnvs = allEnvironments
+                .Where(x => environments.Contains(x.Name))
+                .ToArray();
+
+            if (environments.Length != matchingEnvs.Length)
+            {
+                string[] notMatched = environments
+                    .Except(matchingEnvs.Select(y => y.Name))
+                    .ToArray();
+
+                string notMatchedDesc = string.Join(
+                    ", ",
+                    notMatched.Select(x => $"\"{x}\""));
+
+                this.loggingProvider.Warn(
+                    $"Warning! Could not find more than one environment " +
+                    $"passed in! Environments not found: {notMatchedDesc}. " +
+                    $"Execution will continue with found environments.");
+            }
+                
             return toReturn;
         }
 

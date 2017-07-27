@@ -7,6 +7,7 @@
 
 namespace Meridian.AppVeyorEvu.Console
 {
+    using System.Linq;
     using CommandLine;
     using Meridian.AppVeyorEvu.Logic.Definitions;
     using NLog;
@@ -64,7 +65,8 @@ namespace Meridian.AppVeyorEvu.Console
             {
                 case ActionOption.CompareVariables:
                     executionSuccess = evuSession.CompareEnvironmentVariables(
-                        options.ApiToken);
+                        options.ApiToken,
+                        options.Environments.ToArray());
                     break;
             }
         }
