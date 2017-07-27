@@ -7,7 +7,7 @@
     <ProjectGuid>{066BB85A-4C7F-48BC-9EEE-787A32AC301B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Meridian.AppVeyorEvu.Console</RootNamespace>
-    <AssemblyName>Meridian.AppVeyorEvu.Console</AssemblyName>
+    <AssemblyName>appveyor-evu</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

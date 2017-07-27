@@ -34,7 +34,8 @@ namespace Meridian.AppVeyorEvu.Console
         /// AppVeyor.
         /// </summary>
         [Option(
-            HelpText = "A list of AppVeyor environment names.")]
+            HelpText = "A list of AppVeyor environment names.",
+            Required = true)]
         public IList<string> Environments
         {
             get;
@@ -47,7 +48,8 @@ namespace Meridian.AppVeyorEvu.Console
         /// </summary>
         [Option(
             HelpText = "The location in which to output environment " +
-                "variables when comparing.")]
+                "variables when comparing.",
+            Required = true)]
         public FileInfo OutputCsvLocation
         {
             get;
