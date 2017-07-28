@@ -1,0 +1,30 @@
+# -----------------------------------------------------------------------------
+# <copyright file="appveyor.yml" company="MTCS (Matt Middleton)">
+# Copyright (c) Meridian Technology Consulting Services (Matt Middleton).
+# All rights reserved.
+# </copyright>
+# -----------------------------------------------------------------------------
+
+# Configuration
+configuration: release
+
+# Before Build Config
+before_build:
+  - nuget restore Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.sln
+
+# Build Config
+build:
+  project: Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.sln
+
+# After Build Config
+after_build:
+- cmd: |
+    xcopy /s %APPVEYOR_BUILD_FOLDER%\Licences %APPVEYOR_BUILD_FOLDER%\Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.Console\bin\Release\
+    copy %APPVEYOR_BUILD_FOLDER%\LICENCE.md %APPVEYOR_BUILD_FOLDER%\Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.Console\bin\Release\appveyor-evu-LICENCE.txt
+    copy %APPVEYOR_BUILD_FOLDER%\VERIFICATION.txt %APPVEYOR_BUILD_FOLDER%\Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.Console\bin\Release\VERIFICATION.txt
+    copy %APPVEYOR_BUILD_FOLDER%\README.md %APPVEYOR_BUILD_FOLDER%\Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.Console\bin\Release\ReadMe.txt
+    del %APPVEYOR_BUILD_FOLDER%\README.md %APPVEYOR_BUILD_FOLDER%\Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.Console\bin\Release\*.xml
+    7z a appveyor-evu.zip %APPVEYOR_BUILD_FOLDER%\Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.Console\bin\Release\*.*
+    AppVeyor PushArtifact appveyor-evu.zip -DeploymentName "appveyor-evu Binaries"
+
+# TODO: Chocolatey spec when creating/publishing.

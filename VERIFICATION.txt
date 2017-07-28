@@ -1,0 +1,20 @@
+appveyor-evu relies on binaries/assemblies provided by several NuGet packages.
+
+You can execute the following NuGet commands to recieve the same binaries as
+used by this application:
+
+	// TODO: When publishing/putting together chocolatey package.
+
+Using CertUtil/MD5, the following hash checksums were calculated for the
+following files included in the above packages. You can use these checksums
+to verify the integrity of the included binaries.
+
+	// TODO: When publishing/putting together chocolatey package.
+
+CertUtil usage:
+
+	CertUtil -HashFile <filename> MD5
+
+Example:
+
+	// TODO: When publishing/putting together chocolatey package.
