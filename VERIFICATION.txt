@@ -3,13 +3,21 @@ appveyor-evu relies on binaries/assemblies provided by several NuGet packages.
 You can execute the following NuGet commands to recieve the same binaries as
 used by this application:
 
-	// TODO: When publishing/putting together chocolatey package.
+	1) Install-Package CommandLineParser -Version 2.1.1-beta -Pre
+	2) Install-Package CsvHelper -Version 2.16.3
+	3) Install-Package Newtonsoft.Json -Version 6.0.4
+	4) Install-Package NLog -Version 4.4.11
+	5) Install-Package structuremap -Version 4.5.1
 
 Using CertUtil/MD5, the following hash checksums were calculated for the
 following files included in the above packages. You can use these checksums
 to verify the integrity of the included binaries.
 
-	// TODO: When publishing/putting together chocolatey package.
+	1) CommandLine.dll			80ad1d4bf0ac5aa2386ce0b6c899c9b9
+	2) CsvHelper.dll			99db9eb9678765c0ff2ff2131bc77521
+	3) Newtonsoft.Json.dll		cbd6029abaa8e977d3b7435c6f70dd0e
+	4) NLog.dll					0586ef7355cdca6357bde3cdaf010992
+	5) StructureMap.dll			6d6e239edb7fedabd7e75af16cab76be
 
 CertUtil usage:
 
@@ -17,4 +25,7 @@ CertUtil usage:
 
 Example:
 
-	// TODO: When publishing/putting together chocolatey package.
+cmd> CertUtil -HashFile CommandLine.dll MD5
+MD5 hash of file CommandLine.dll:
+80ad1d4bf0ac5aa2386ce0b6c899c9b9
+CertUtil: -hashfile command completed successfully.
