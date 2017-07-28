@@ -19,11 +19,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Licences", "Licences", "{DA
 	ProjectSection(SolutionItems) = preProject
 		..\Licences\CommandLineParser-LICENCE.txt = ..\Licences\CommandLineParser-LICENCE.txt
 		..\Licences\CsvHelper-LICENCE.txt = ..\Licences\CsvHelper-LICENCE.txt
+		..\Licences\Microsoft.AspNet.WebApi.Client-LICENCE.txt = ..\Licences\Microsoft.AspNet.WebApi.Client-LICENCE.txt
 		..\Licences\Newtonsoft.Json-LICENCE.txt = ..\Licences\Newtonsoft.Json-LICENCE.txt
 		..\Licences\NLog-LICENCE.txt = ..\Licences\NLog-LICENCE.txt
 		..\Licences\NLog.Config-LICENCE.txt = ..\Licences\NLog.Config-LICENCE.txt
 		..\Licences\NLog.Schema-LICENCE.txt = ..\Licences\NLog.Schema-LICENCE.txt
 		..\Licences\StructureMap-LICENCE.txt = ..\Licences\StructureMap-LICENCE.txt
+		..\Licences\StyleCop.MSBuild-LICENCE.txt = ..\Licences\StyleCop.MSBuild-LICENCE.txt
+		..\Licences\System.Reflection.Emit.Lightweight-LICENCE.txt = ..\Licences\System.Reflection.Emit.Lightweight-LICENCE.txt
 	EndProjectSection
 EndProject
 Global
