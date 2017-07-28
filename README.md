@@ -26,3 +26,12 @@ Simply invoke `appveyor-evu` to view the options available:
     --help                 Display this help screen.
 
     --version              Display version information.
+
+Example:
+
+    appveyor-evu --apitoken "123abc" --environments "dev-somecorpapp" "uat-somecorpapp" "prod-somecorpapp" --outputcsvlocation "details.csv"
+    
+### AppVeyor API token
+You can view your AppVeyor API token by logging in and visiting:
+
+https://ci.appveyor.com/api-token
