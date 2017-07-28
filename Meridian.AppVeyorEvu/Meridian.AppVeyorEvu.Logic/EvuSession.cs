@@ -24,13 +24,13 @@ namespace Meridian.AppVeyorEvu.Logic
         /// <summary>
         /// The base URI for the AppVeyor API.
         /// </summary>
-        private const string AppVeyorApiBaseUri = 
+        private const string AppVeyorApiBaseUri =
             "https://ci.appveyor.com/api/";
 
         /// <summary>
         /// A relative URI to list all environments.
         /// </summary>
-        private const string AllEnvironmentsRelUri =
+        private const string AllEnvironmentsRelUri = 
             "./environments";
 
         /// <summary>
@@ -90,75 +90,24 @@ namespace Meridian.AppVeyorEvu.Logic
         {
             bool toReturn = default(bool);
 
-            // TODO: Validation/error handling on opitional options.
-            this.loggingProvider.Debug(
-                "Attempting to pull back all environments...");
-
-            Models.Environment[] allEnvironments =
-                this.ExecuteAppVeyorApi<Models.Environment[]>(
+            try
+            {
+                this.PerformVariableComparason(
                     apiToken,
-                    new Uri(AllEnvironmentsRelUri, UriKind.Relative));
+                    environments,
+                    outputCsvLocation);
 
-            this.loggingProvider.Info(
-                $"{allEnvironments.Length} environment(s) returned.");
-
-            this.loggingProvider.Debug("Environments returned:");
-
-            foreach (Models.Environment environment in allEnvironments)
-            {
-                this.loggingProvider.Debug($"-> {environment}");
+                toReturn = true;
             }
-
-            string environmentsPassedIn = string.Join(
-                ", ",
-                environments.Select(x => $"\"{x}\""));
-
-            this.loggingProvider.Debug(
-                $"Selecting environment names passed in " +
-                $"({environmentsPassedIn}) from the ones pulled back from " +
-                $"the API...");
-
-            Models.Environment[] matchingEnvs = allEnvironments
-                .Where(x => environments.Contains(x.Name))
-                .ToArray();
-
-            if (environments.Length != matchingEnvs.Length)
+            catch (Exception ex)
             {
-                string[] notMatched = environments
-                    .Except(matchingEnvs.Select(y => y.Name))
-                    .ToArray();
-
-                string notMatchedDesc = string.Join(
-                    ", ",
-                    notMatched.Select(x => $"\"{x}\""));
-
-                this.loggingProvider.Warn(
-                    $"Warning! Could not find more than one environment " +
-                    $"passed in! Environments not found: {notMatchedDesc}. " +
-                    $"Execution will continue with found environments.");
+                // An exception we have either thrown intentionally, or
+                // an exception we have not expected.
+                // Either way, we want to log this as Fatal.
+                this.loggingProvider.Fatal(
+                    $"An {nameof(Exception)} was thrown! Detail included.",
+                    ex);
             }
-
-            this.loggingProvider.Debug(
-                $"Pulling back environment variables for each environment " +
-                $"({matchingEnvs.Length} in total)...");
-
-            // Pull back the environment variables for each of the matching
-            // environments.
-            Models.EnvironmentDetail[] envSettings = matchingEnvs
-                .Select(x => this.PullBackEnvironmentSettings(apiToken, x))
-                .ToArray();
-
-            this.loggingProvider.Info(
-                $"Environment variables for {envSettings.Length} " +
-                $"environment(s) pulled down.");
-
-            this.loggingProvider.Debug("Constructing the output CSV...");
-
-            this.ConstructCsv(outputCsvLocation, envSettings);
-
-            this.loggingProvider.Info(
-                $"Output CSV constructed. Location: " +
-                $"{outputCsvLocation.FullName}.");
 
             return toReturn;
         }
@@ -315,6 +264,13 @@ namespace Meridian.AppVeyorEvu.Logic
                         $"HTTP response code returned: " +
                         $"{response.StatusCode}.");
 
+                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        throw new UnauthorizedAccessException(
+                            "401 returned - please double check your API " +
+                            "token!");
+                    }
+
                     response.EnsureSuccessStatusCode();
 
                     this.loggingProvider.Debug(
@@ -330,6 +286,95 @@ namespace Meridian.AppVeyorEvu.Logic
             }
 
             return toReturn;
+        }
+
+        /// <summary>
+        /// Performs environment variable comparison and returns a
+        /// <see cref="bool" /> value indicating success.
+        /// </summary>
+        /// <param name = "apiToken" >
+        /// The AppVeyor API token to be used.
+        /// </param>
+        /// <param name="environments">
+        /// A list of environment names, as they appear in AppVeyor.
+        /// </param>
+        /// <param name="outputCsvLocation">
+        /// The destination location for the CSV file, as a
+        /// <see cref="FileInfo" /> instance.
+        /// </param>
+        private void PerformVariableComparason(
+            string apiToken,
+            string[] environments,
+            FileInfo outputCsvLocation)
+        {
+            this.loggingProvider.Debug(
+                "Attempting to pull back all environments...");
+
+            Models.Environment[] allEnvironments =
+                this.ExecuteAppVeyorApi<Models.Environment[]>(
+                    apiToken,
+                    new Uri(AllEnvironmentsRelUri, UriKind.Relative));
+
+            this.loggingProvider.Info(
+                $"{allEnvironments.Length} environment(s) returned.");
+
+            this.loggingProvider.Debug("Environments returned:");
+
+            foreach (Models.Environment environment in allEnvironments)
+            {
+                this.loggingProvider.Debug($"-> {environment}");
+            }
+
+            string environmentsPassedIn = string.Join(
+                ", ",
+                environments.Select(x => $"\"{x}\""));
+
+            this.loggingProvider.Debug(
+                $"Selecting environment names passed in " +
+                $"({environmentsPassedIn}) from the ones pulled back from " +
+                $"the API...");
+
+            Models.Environment[] matchingEnvs = allEnvironments
+                .Where(x => environments.Contains(x.Name))
+                .ToArray();
+
+            if (environments.Length != matchingEnvs.Length)
+            {
+                string[] notMatched = environments
+                    .Except(matchingEnvs.Select(y => y.Name))
+                    .ToArray();
+
+                string notMatchedDesc = string.Join(
+                    ", ",
+                    notMatched.Select(x => $"\"{x}\""));
+
+                this.loggingProvider.Warn(
+                    $"Warning! Could not find more than one environment " +
+                    $"passed in! Environments not found: {notMatchedDesc}. " +
+                    $"Execution will continue with found environments.");
+            }
+
+            this.loggingProvider.Debug(
+                $"Pulling back environment variables for each environment " +
+                $"({matchingEnvs.Length} in total)...");
+
+            // Pull back the environment variables for each of the matching
+            // environments.
+            Models.EnvironmentDetail[] envSettings = matchingEnvs
+                .Select(x => this.PullBackEnvironmentSettings(apiToken, x))
+                .ToArray();
+
+            this.loggingProvider.Info(
+                $"Environment variables for {envSettings.Length} " +
+                $"environment(s) pulled down.");
+
+            this.loggingProvider.Debug("Constructing the output CSV...");
+
+            this.ConstructCsv(outputCsvLocation, envSettings);
+
+            this.loggingProvider.Info(
+                $"Output CSV constructed. Location: " +
+                $"{outputCsvLocation.FullName}.");
         }
 
         /// <summary>
