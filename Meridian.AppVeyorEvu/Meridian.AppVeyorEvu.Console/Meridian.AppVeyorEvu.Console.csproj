@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>compare.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="CsvProvider.cs" />
     <Compile Include="LoggingProvider.cs" />
@@ -44,9 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Content Include="compare.ico" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Meridian.AppVeyorEvu.Console.nuspec" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

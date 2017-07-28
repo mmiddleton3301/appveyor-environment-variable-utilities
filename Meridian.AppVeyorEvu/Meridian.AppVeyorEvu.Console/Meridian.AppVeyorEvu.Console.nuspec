@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+
+    <!--
+      Chocolately packages should have lowercase IDs, hyphenated.
+      It also will form the URL.
+    -->
+    <id>appveyor-evu</id>
+
+    <!--
+      We wont be able to get version information from the assembly, as we're
+      not using chocolately to compile. You can't specify a csproj using the
+      pack command.
+      We'll just have to manually update this version when we want to push a
+      new version of the package, and keep it in line with AssemblyInfo.cs.
+    -->
+    <version>1.0.0</version>
+
+    <!--
+      Metadata now...
+    -->
+    <title>AppVeyor Environment Variable Utilities</title>
+    <authors>Meridian Technology Consulting Services (Matt Middleton)</authors>
+    <owners>Meridian Technology Consulting Services (Matt Middleton)</owners>
+    <licenseUrl>https://raw.githubusercontent.com/mmiddleton3301/appveyor-environment-variable-utilities/master/LICENCE.md</licenseUrl>
+    <projectUrl>https://github.com/mmiddleton3301/appveyor-environment-variable-utilities</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/mmiddleton3301/appveyor-environment-variable-utilities/master/Compare-64.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>A console application (and C# library) that uses the AppVeyor API to compare multiple different deployment environments and their environment variables.</description>
+    <copyright>Copyright (c) Meridian Technology Consulting Services (Matt Middleton)</copyright>
+    <tags>appveyor environment-variables comparison utility backup-solution</tags>
+
+  </metadata>
+
+  <!--
+    Then, the files.
+  -->
+  <files>
+    <file src="bin\Release\*.*" target="tools\bin" />
+  </files>
+
+</package>
