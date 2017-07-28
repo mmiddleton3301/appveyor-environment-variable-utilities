@@ -26,5 +26,9 @@ after_build:
     del %APPVEYOR_BUILD_FOLDER%\README.md %APPVEYOR_BUILD_FOLDER%\Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.Console\bin\Release\*.xml
     7z a appveyor-evu.zip %APPVEYOR_BUILD_FOLDER%\Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.Console\bin\Release\*.*
     AppVeyor PushArtifact appveyor-evu.zip -DeploymentName "appveyor-evu Binaries"
+    choco pack %APPVEYOR_BUILD_FOLDER%\Meridian.AppVeyorEvu\Meridian.AppVeyorEvu.Console\Meridian.AppVeyorEvu.Console.nuspec
 
-# TODO: Chocolatey spec when creating/publishing.
+# Artifact Config
+artifacts:
+  - path: "*.nupkg"
+    name: appveyor-evu Chocolatey Pacakge
