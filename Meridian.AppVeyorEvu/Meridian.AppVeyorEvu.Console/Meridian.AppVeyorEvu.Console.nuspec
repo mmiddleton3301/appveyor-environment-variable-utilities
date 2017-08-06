@@ -27,6 +27,7 @@
     <projectUrl>https://github.com/mmiddleton3301/appveyor-environment-variable-utilities</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/mmiddleton3301/appveyor-environment-variable-utilities/master/Compare-64.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <summary>Easily compare and/or backup AppVeyor environment variables</summary>
     <description>A console application (and C# library) that uses the AppVeyor API to compare multiple different deployment environments and their environment variables.</description>
     <copyright>Copyright (c) Meridian Technology Consulting Services (Matt Middleton)</copyright>
     <tags>appveyor environment-variables comparison utility backup-solution</tags>
