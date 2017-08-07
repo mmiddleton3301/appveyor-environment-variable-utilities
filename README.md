@@ -1,5 +1,5 @@
 # AppVeyor Environment Variable Utilities
-[![Build status](https://ci.appveyor.com/api/projects/status/utstv5d6xj7ok2gb?svg=true)](https://ci.appveyor.com/project/mmiddleton3301/appveyor-environment-variable-utilities)
+[![Build status](https://ci.appveyor.com/api/projects/status/utstv5d6xj7ok2gb?svg=true)](https://ci.appveyor.com/project/mmiddleton3301/appveyor-environment-variable-utilities) [![Downloads Badge](https://img.shields.io/chocolatey/dt/appveyor-evu.svg)](https://chocolatey.org/packages/appveyor-evu) [![Version Badge](https://img.shields.io/chocolatey/v/appveyor-evu.svg)](https://chocolatey.org/packages/appveyor-evu)
 
 A console application (and C# library) that uses the AppVeyor API to compare multiple different deployment environments and their environment variables.
 
@@ -7,7 +7,11 @@ This utility can also be used to back up your environment variables for your var
 
 ## Installation
 ### Chocolatey
-`appveyor-evu` will be available via chocolatey. When the first version of the package has been approved, then details on how to install will be included here.
+The recommended way of installing `appveyor-evu` is via [chocolatey](https://chocolatey.org/):
+
+`choco install appveyor-evu`
+
+You can then simply invoke `appveyor-evu` from the command line! As easy as that!
 
 ## Manually
 If you don't want to use chocolatey, `appveyor-evu` can be downloaded and "installed" manually: just download the latest release from GitHub, unzip the contents of the archive to a directory of your choosing, and start your command line from that directory. Invoke `appveyor-evu` at your leisure.
